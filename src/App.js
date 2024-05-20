@@ -40,30 +40,54 @@ export default function App() {
     },
   ];
 
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [showScore, setShowScore] = useState(false);
+  const [score, setScore] = useState(0);
+
+  const handleAnswerButtonClick = (isCorrect) => {
+    if (isCorrect) {
+      setScore(score + 1);
+    }
+
+    const nextQuestion = currentQuestion + 1;
+    if (nextQuestion < questions.length) {
+      setCurrentQuestion(nextQuestion);
+    } else {
+      setShowScore(true);
+    }
+  };
+
   return (
     <div className="app">
       {/* HINT: substitua "falso" pela lógica para exibir o
        pontuação quando o usuário respondeu a todas as perguntas
  */}
-      {false ? (
+      {showScore ? (
         <div className="score-section">
-          Você acertou 1 de {questions.length}
+          Você acertou {score} de um total de {questions.length}
         </div>
       ) : (
         <>
           <div className="question-section">
             <div className="question-count">
-              <span>Question 1</span>/{questions.length}
+              <span>Question {currentQuestion + 1}</span>/{questions.length}
             </div>
             <div className="question-text">
-              É aqui que a pergunta vai estar!
+              {questions[currentQuestion].questionText}
             </div>
           </div>
           <div className="answer-section">
-            <button>Alternativa 1</button>
-            <button>Alternativa 2</button>
-            <button>Alternativa 3</button>
-            <button>Alternativa 4</button>
+            {questions[currentQuestion].answerOptions.map(
+              (answerOption, index) => (
+                <button
+                  onClick={() =>
+                    handleAnswerButtonClick(answerOption.isCorrect)
+                  }
+                >
+                  {answerOption.answerText}
+                </button>
+              )
+            )}
           </div>
         </>
       )}
